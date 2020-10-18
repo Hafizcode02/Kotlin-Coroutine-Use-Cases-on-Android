@@ -13,7 +13,7 @@ In the `playground` package you can play around with Coroutines examples that ru
 
 ## 🔧 Project Setup
 
-Every use case is using its own `Activity` and `JetPack ViewModel`. The `ViewModel`s contains all the interesting Coroutine related code.
+Every use case is using its own `Activity` and `JetPack ViewModel`. The `ViewModel`s contain all the interesting Coroutine related code.
 `Activities` listen to `LiveData` events of the `ViewModel` and render received `UiState`s.
 
 This project is using retrofit/okhttp together with a `MockNetworkInterceptor`. This lets you define how the API should behave.
@@ -23,17 +23,20 @@ Android version.
 
 Unit Tests exist for most use cases.
 
-## ✍️ Related Blogposts
+## ✍️ Related blog posts
+* Why exception handling with Kotlin Coroutines is so hard and how to successfully master it! [[link](https://www.lukaslechner.com/why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it/)]
 * Understanding Kotlin Coroutines with this mental model [[link](https://www.lukaslechner.com/understanding-kotlin-coroutines-with-this-mental-model/)]
+* Do I need to call suspend functions of Retrofit and Room on a background thread? [[link](https://www.lukaslechner.com/do-i-need-to-call-suspend-functions-of-retrofit-and-room-on-a-background-thread/)]
 * Comparing Kotlin Coroutines with Callbacks and RxJava [[link](https://www.lukaslechner.com/comparing-kotlin-coroutines-with-callbacks-and-rxjava/)]
+* How to run an expensive calculation with Kotlin Coroutines on the Android Main Thread without freezing the UI [[link](https://www.lukaslechner.com/how-to-run-an-expensive-calculation-with-kotlin-coroutines-on-the-android-main-thread-without-freezing-the-ui/)]
 
 Sign up to my [newsletter](https://www.lukaslechner.com/newsletter/) to never miss a new blog post. I will publish new blog posts about Coroutines on a regular basis.
 
 ## 🎓 Online Course
 
-This project is the foundation of a comprehensive Online Course about "Mastering Kotlin Coroutines for Android Development", which I am currently working on.
+This project is the foundation of a comprehensive Online Course about [Mastering Kotlin Coroutines for Android Development](https://www.lukaslechner.com/coroutines-on-android/)
 
-Sign up to my [newsletter](https://www.lukaslechner.com/newsletter/) to get more information once it is released!
+![CourseCoroutinesOnAndroid](documentation/images/course.png)
 
 ## ⭐️ Use Cases
 1. [Perform single network request](#1-perform-single-network-request)
@@ -52,6 +55,7 @@ Sign up to my [newsletter](https://www.lukaslechner.com/newsletter/) to get more
 14. [Continue Coroutine execution even when the user leaves the screen](#14-continue-coroutine-execution-when-the-user-leaves-the-screen)
 15. [Using WorkManager with Coroutines](#15-using-workmanager-with-coroutines)
 16. [Performance analysis of dispatchers, number of coroutines and yielding](#16-performance-analysis-of-dispatchers-number-of-coroutines-and-yielding)
+17. [Perform expensive calculation on Main Thread without freezing the UI](#17-perform-expensive-calculation-on-main-thread-without-freezing-the-ui)
 
 ## 📄 Description
 
@@ -67,7 +71,7 @@ This use case performs two network requests sequentially. First it retrieves rec
 
 There are also 2 alternative implementations included. One is using old-school [callbacks](app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase2/callbacks/SequentialNetworkRequestsCallbacksViewModel.kt).
 The other one uses [RxJava](app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase2/rx/SequentialNetworkRequestsRxViewModel.kt). You can compare each implementation.
-If you compare all implementation, it is really interesting to see, in my opinion, how simple the Coroutine-based version actually is.
+If you compare all three implementations, it is really interesting to see, in my opinion, how simple the Coroutine-based version actually is.
 
 [[code](app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase2/Perform2SequentialNetworkRequestsViewModel.kt)]
 
@@ -138,6 +142,8 @@ This is done by enabling Coroutine Debug mode by setting the property `kotlinx.c
 
 This use case calculates the factorial of a number. The calculation is performed on a background thread using the default Dispatcher.
 
+**Attention: This use case does not support cancellation! UseCase#11 fixes this!**
+
 [[code](app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase10/CalculationInBackgroundViewModel.kt)]
 
 In the respective unit test, we have to pass the testDispatcher to the ViewModel, so that the calculation is not performed on a background thread but on the main thread.
@@ -163,14 +169,14 @@ The factorial calculation here is not performed by a single coroutine, but by an
 ### 13. Exception Handling
 
 This use case demonstrates different ways of handling exceptions using `try/catch` and `CoroutineExceptionHandler`. It also demonstrates when you should to use `supervisorScope{}`: In situations when you don't want a failing coroutine to cancel
-its sibling coroutines. In the use case the results of the successful responses are shown even tough one response wasn't successful.
+its sibling coroutines. In one implementation of this use case, the results of the successful responses are shown even tough one response wasn't successful.
 
 [[code](app/src/main/java/com/lukaslechner/coroutineusecasesonandroid/usecases/coroutines/usecase13/ExceptionHandlingViewModel.kt)]
 
 ### 14. Continue Coroutine execution when the user leaves the screen
 
-Usually, when the user leaves the screen, the `ViewModel` gets cleared and all the coroutines launched in `viewModelScope` get cancelled. Sometimes we want a certain coroutine operation to be continued
-when the user leave the screen. In this use case, the network request keeps running and the results still get inserted into the database
+Usually, when the user leaves the screen, the `ViewModel` gets cleared and all the coroutines launched in `viewModelScope` get cancelled. Sometimes, however, we want a certain coroutine operation to be continued
+when the user leaves the screen. In this use case, the network request keeps running and the results still get inserted into the database
 cache when the user leaves the screen. This makes sense in real world application as we don't want to cancel an already started background "cache sync".
 
 
@@ -194,6 +200,12 @@ example, we are sending an analytics request when the user enters the screen, wh
 
 This is an extension of use case #12 (Offload expensive calculation to several coroutines). Here it is possible to additionally define the dispatcher type you want
 the calculation to be performed on. Additionally, you can enable or disable the call to `yield()` during the calculation. A list of calculations is displayed on the bottom in order to be able to compare them in a convenient way.
+
+### 17. Perform expensive calculation on Main Thread without freezing the UI
+
+This example shows how you can perform an expensive calculation on the main thread in a non-blocking fashion. It uses `yield()` for every step in the calculation so that other work, like drawing the UI, can be performed
+on the main thread. It is more a "showcase" rather than a use case for a real application, because of performance reasons you should always perform expensive calculations on a background thread (See UseCase#10).
+See [[this blog post](https://www.lukaslechner.com/how-to-run-an-expensive-calculation-with-kotlin-coroutines-on-the-android-main-thread-without-freezing-the-ui/)] for more information!
 
 
 You can play around and check the performance of different configurations!
