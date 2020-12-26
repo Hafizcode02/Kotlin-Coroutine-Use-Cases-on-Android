@@ -23,8 +23,13 @@ Android version.
 
 Unit Tests exist for most use cases.
 
+## 🍿️ Related Videos
+* Kotlin Coroutines Fundamentals Playlist [[link](https://www.youtube.com/playlist?list=PL-1MzrWZIYU2a4TGbSXeXzfet8Br3cya1)]
+* Kotlin Coroutines Exception Handling explained [[link](https://youtu.be/Pgek3_3vPU8)]
+
 ## ✍️ Related blog posts
 * Why exception handling with Kotlin Coroutines is so hard and how to successfully master it! [[link](https://www.lukaslechner.com/why-exception-handling-with-kotlin-coroutines-is-so-hard-and-how-to-successfully-master-it/)]
+* Kotlin Coroutines exception handling cheat sheet [[link](https://www.lukaslechner.com/coroutines-exception-handling-cheat-sheet/)]
 * Understanding Kotlin Coroutines with this mental model [[link](https://www.lukaslechner.com/understanding-kotlin-coroutines-with-this-mental-model/)]
 * Do I need to call suspend functions of Retrofit and Room on a background thread? [[link](https://www.lukaslechner.com/do-i-need-to-call-suspend-functions-of-retrofit-and-room-on-a-background-thread/)]
 * Comparing Kotlin Coroutines with Callbacks and RxJava [[link](https://www.lukaslechner.com/comparing-kotlin-coroutines-with-callbacks-and-rxjava/)]
@@ -36,7 +41,15 @@ Sign up to my [newsletter](https://www.lukaslechner.com/newsletter/) to never mi
 
 This project is the foundation of a comprehensive Online Course about [Mastering Kotlin Coroutines for Android Development](https://www.lukaslechner.com/coroutines-on-android/)
 
-![CourseCoroutinesOnAndroid](documentation/images/course.png)
+[![CourseCoroutinesOnAndroid](documentation/images/course.png)](https://www.lukaslechner.com/coroutines-on-android/)
+
+## 📢 Sharing is Caring 
+
+If you like this project, please tell other developers about it! ❤️
+
+[![Share on Twitter](documentation/images/Twitter_bird_logo.png)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2FLukasLechnerDev%2FKotlin-Coroutine-Use-Cases-on-Android&text=This%20awesome%20example%20project%20shows%20how%20to%20implement%20the%20most%20common%20use%20cases%20for%20using%20Kotlin%20Coroutines%20for%20Android%20Development%21%20By%20@LukasLechnerDev&hashtags=%23AndroidDev%20%23Kotlin%20%23Coroutines)
+
+If you like, you can follow me on Twitter [**@LukasLechnerDev**](https://twitter.com/LukasLechnerDev).
 
 ## ⭐️ Use Cases
 1. [Perform single network request](#1-perform-single-network-request)
